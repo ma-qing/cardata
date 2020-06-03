@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action='/uos/openapi/autoplatform/type' method='post'>
+     <br />{% csrf_token %}<br />
+    <input type='hidden' name='jsonRequestData' value='请求报文字符串'/>
+    <input type='hidden' name='merchantNo' value='商户号'/>
+    <input type='hidden' name='signTime' value='签名时间'/>
+    <input type='hidden' name='sign' value='签名'/>
+    <button type="submit" name="sub_btn">提交</button>
+</form>
+</body>
+</html>

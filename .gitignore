@@ -1,0 +1,7 @@
+*.pyc
+*.xml
+*.log
+log/
+__pycache__/
+
+
