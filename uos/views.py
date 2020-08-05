@@ -1,10 +1,11 @@
 import json
 
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from lib.utils import render_json
+from lib.utils import render_json, getYesterDate
 from uos.models import Platform, CarStyle, CarDetail
 from uos.serializers import PlatformSerializers, CarTypeSerializers, CarDetailSerializers
 
@@ -28,14 +29,26 @@ def cartypeinfo(request):
 
 # 价格信息
 def cardetail(request):
+
     if request.method == "POST":
-        jsonRequestData = request.POST.get('jsonRequestData ')
-        jsonRequestData_dict = json.loads(jsonRequestData)
+        if not request.body:
+            return render_json(code=404, msg="jsonRequestData error")
+        print(request.body)
+        requestbody = json.loads(request.body)
+
+        # jsonRequestData = requestbody.get('jsonRequestData ')
+        jsonRequestData_dict = requestbody.get("jsonRequestData")
         page = jsonRequestData_dict.get("page")
         pageSize = jsonRequestData_dict.get("pageSize")
         date = jsonRequestData_dict.get("date")
+        if not date:
+            date = getYesterDate()
 
-        carprices = CarDetail.objects.all()
-        carprice_ser = CarDetailSerializers(carprices, many=True)
+
+
+        carprices = CarDetail.objects.filter(updatetime__istartswith=date)
+        paginator = Paginator(carprices, pageSize)
+        page = paginator.page(page)
+        carprice_ser = CarDetailSerializers(page, many=True)
         return render_json(autoPriceList=carprice_ser.data)
 
